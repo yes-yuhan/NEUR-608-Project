@@ -1,0 +1,45 @@
+'''
+This file includes the analytic steps in the clustering.
+'''
+
+import numpy as np 
+from sklearn.cluster import KMeans  
+import nibabel as nib 
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+
+# Load the correlation matrix
+cormat = np.load("path to the correlation matrix file")   
+
+# Perform K means clustering
+kmeans = KMeans(n_clusters=6, random_state=0, n_init=10, max_iter=300).fit(cormat)         
+
+# Load the thalamic mask file
+tha_mask = nib.load("path to the thalamic mask file").get_fdata() 
+                                                 ^ 
+# Map the
+vector_to_mask = vector_to_mask_mapping(tha_mask, cormat) 
+
+
+#
+for i in range(6):                                           
+    voxel_indices = np.where(kmeans.labels_ == i)[0] 
+    mask_indices = [vector_to_mask[v] for v in voxel_indices] 
+    for index in mask_indices: 
+            clusters[index] = i+1 
+
+#
+fig=plt.figure()  
+#
+ax = fig.add_subplot(111, projection="3d") 
+
+#
+for i in range(6): 
+    voxel_indices = np.where(clusters == i+1) 
+    ax.scatter(*voxel_indices, color=plt.cm.jet(i/6),s=70)   
+
+#
+for i in range(8): 
+    voxel_indices = np.where(clusters == i+1) 
+    ax.scatter(*voxel_indices, color=plt.cm.jet(i/6),s=70)
