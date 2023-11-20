@@ -18,7 +18,7 @@ kmeans = KMeans(n_clusters=6, random_state=0, n_init=10, max_iter=300).fit(corma
 # Load the thalamic mask file
 tha_mask = nib.load("path to the thalamic mask file").get_fdata() 
                                                  ^ 
-# Map the
+# Map the vector index back to the thalamic mask
 vector_to_mask = vector_to_mask_mapping(tha_mask, cormat) 
 
 
@@ -43,3 +43,27 @@ for i in range(6):
 for i in range(8): 
     voxel_indices = np.where(clusters == i+1) 
     ax.scatter(*voxel_indices, color=plt.cm.jet(i/6),s=70)
+
+# Permutation test for within-cluster distance
+from sklearn.metrics import pairwise_distances
+from scipy.spatial.distance import pdist, squareform
+import numpy as np
+
+# Define a function to calculate the sum of within-cluster distances
+def within_cluster_distance(X, labels):
+   dist = pairwise_distances(X)
+   mask = labels[:, None] == labels
+   return np.sum(dist * mask) / 2
+
+# Perform the permutation test
+n_permutations = 1000
+within_distances = np.empty(n_permutations)
+original_within_distance = within_cluster_distance(cormat, kmeans.labels_)
+
+for i in range(n_permutations):
+   permuted_labels = np.random.permutation(kmeans.labels_)
+   within_distances[i] = within_cluster_distance(cormat, permuted_labels)
+
+p_value = np.mean(within_distances <= original_within_distance)
+
+print(f'P-value: {p_value}')
