@@ -154,6 +154,19 @@ def create_new_cortical_mask(mask_path, correlation_row, output_path):
     new_mask_img = nib.Nifti1Image(mask_data, affine=mask.affine)
     nib.save(new_mask_img, output_path)
 
+### This function maps every column of the row vector to the cortical mask
+def cor_vector_to_mask_mapping(cor_mask, correlation_matrix): 
+...     mask = cor_mask 
+...     vector_to_mask = {} 
+...     col = 0 
+...     for i in range(mask.shape[0]): 
+...             for j in range(mask.shape[1]): 
+...                     for k in range(mask.shape[2]): 
+...                             if mask[i,j,k] > 0.5: 
+...                                     vector_to_mask[col]=(i,j,k) 
+                                    col += 1 
+```return vector_to_mask
+
 ### This function maps a row of the correlation matrix to the indices in a thalamic mask
 def vector_to_mask_mapping(tha_mask, correlation_matrix): 
     mask = tha_mask 
