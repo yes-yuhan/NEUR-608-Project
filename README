@@ -1,1 +1,6 @@
+This repo is created for the final project of Yuhan Liu for NEUR 608 in 2023.
 
+Clustering: A documentation of the script for clustering and attempted permutation test.
+
+Helper functions: A documentation of all the helper functions created to aid the transition between
+the vector space, the voxel coordinates, and other stuff.
